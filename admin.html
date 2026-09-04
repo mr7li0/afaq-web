@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>آفاق - لوحة تحكم المعرض</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/kufam-font.js"></script>
+  <style>
+    /* ===== ADMIN DASHBOARD ===== */
+    .admin-page { padding:calc(var(--nav-height) + 24px) 24px 60px; max-width:1100px; margin:0 auto; }
+    .admin-page h1 { font-family:var(--font-milan); font-size:clamp(1.6rem,3vw,2.2rem); color:var(--ivory); margin:0 0 8px; }
+    .admin-page .subtitle { color:var(--ivory-dark); font-size:0.9rem; margin:0 0 32px; opacity:0.7; }
+
+    /* Stats row */
+    .admin-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin-bottom:32px; }
+    .admin-stat {
+      background:var(--bg-card); border:1px solid var(--primary-deeper);
+      border-radius:14px; padding:18px 16px; text-align:center;
+    }
+    .admin-stat .num { font-family:var(--font-milan); font-size:1.8rem; color:var(--ivory); margin:0; }
+    .admin-stat .label { font-size:0.75rem; color:var(--ivory-dark); margin:4px 0 0; opacity:0.6; }
+
+    /* Actions bar */
+    .admin-actions { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:24px; }
+    .admin-btn {
+      padding:10px 20px; border-radius:10px; font-size:0.88rem; font-weight:500;
+      cursor:pointer; transition:all 0.2s; font-family:var(--font-body);
+      display:inline-flex; align-items:center; gap:6px;
+    }
+    .admin-btn-primary { background:var(--accent); color:#fff; border:1px solid var(--accent); }
+    .admin-btn-primary:hover { background:#3b8ae6; }
+    .admin-btn-secondary { background:rgba(233,227,211,0.06); color:var(--ivory); border:1px solid var(--primary-deeper); }
+    .admin-btn-secondary:hover { background:rgba(233,227,211,0.12); }
+    .admin-btn-danger { background:rgba(239,83,80,0.12); color:#ef5350; border:1px solid rgba(239,83,80,0.2); }
+    .admin-btn-danger:hover { background:rgba(239,83,80,0.2); }
+
+    /* Grid */
+    .admin-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; }
+    .admin-card {
+      background:var(--bg-card); border:1px solid var(--primary-deeper);
+      border-radius:14px; overflow:hidden; transition:all 0.25s;
+    }
+    .admin-card:hover { border-color:var(--accent); box-shadow:0 8px 24px var(--shadow-heavy); }
+    .admin-card-img {
+      width:100%; aspect-ratio:1; object-fit:cover; display:block;
+      background:var(--bg-dark);
+    }
+    .admin-card-placeholder {
+      width:100%; aspect-ratio:1; display:flex; align-items:center; justify-content:center;
+      background:var(--bg-dark); color:var(--ivory-dark); opacity:0.3;
+    }
+    .admin-card-body { padding:14px 16px; }
+    .admin-card-title { font-size:0.95rem; font-weight:500; color:var(--ivory); margin:0 0 4px; }
+    .admin-card-desc { font-size:0.8rem; color:var(--ivory-dark); opacity:0.6; margin:0 0 10px; }
+    .admin-card-meta { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    .admin-tag {
+      padding:3px 10px; border-radius:6px; font-size:0.7rem; font-weight:500;
+      border:1px solid;
+    }
+    .admin-tag-series { background:rgba(79,156,247,0.12); color:var(--accent); border-color:rgba(79,156,247,0.3); }
+    .admin-tag-individual { background:rgba(233,227,211,0.06); color:var(--ivory-dark); border-color:rgba(233,227,211,0.12); }
+    .admin-tag-carousel { background:rgba(255,171,118,0.12); color:var(--accent-orange); border-color:rgba(255,171,118,0.3); }
+    .admin-tag-hero { background:rgba(126,200,160,0.12); color:var(--accent-green); border-color:rgba(126,200,160,0.3); }
+    .admin-card-actions { display:flex; gap:6px; margin-top:10px; }
+    .admin-card-actions button {
+      flex:1; padding:7px 0; border-radius:8px; font-size:0.75rem;
+      cursor:pointer; transition:all 0.2s; font-family:var(--font-body);
+      border:1px solid var(--primary-deeper); background:transparent; color:var(--ivory-dark);
+    }
+    .admin-card-actions button:hover { background:rgba(233,227,211,0.08); color:var(--ivory); }
+    .admin-card-actions .del-btn:hover { background:rgba(239,83,80,0.15); color:#ef5350; border-color:rgba(239,83,80,0.3); }
+
+    /* Modal */
+    .modal-overlay {
+      position:fixed; inset:0; z-index:20000;
+      background:rgba(0,0,0,0.7); backdrop-filter:blur(8px);
+      display:none; align-items:center; justify-content:center; padding:20px;
+    }
+    .modal-overlay.open { display:flex; }
+    .modal-box {
+      background:var(--bg-card); border:1px solid var(--primary-deeper);
+      border-radius:16px; width:100%; max-width:520px;
+      max-height:90vh; overflow-y:auto;
+      box-shadow:0 24px 80px rgba(0,0,0,0.5);
+      padding:28px 24px;
+    }
+    .modal-box h2 { font-family:var(--font-milan); font-size:1.3rem; color:var(--ivory); margin:0 0 20px; }
+    .form-group { margin-bottom:16px; }
+    .form-group label { display:block; font-size:0.78rem; color:var(--ivory-dark); margin-bottom:6px; }
+    .form-group input[type="text"],
+    .form-group textarea,
+    .form-group select {
+      width:100%; padding:10px 14px; border-radius:10px;
+      background:rgba(0,0,0,0.25); border:1px solid var(--primary-deeper);
+      color:var(--ivory); font-size:0.9rem; font-family:var(--font-body);
+      transition:border-color 0.2s;
+    }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+      border-color:var(--accent); outline:none;
+    }
+    .form-group textarea { min-height:80px; resize:vertical; }
+    .form-group select option { background:var(--bg-card); color:var(--ivory); }
+    .form-row { display:flex; gap:12px; }
+    .form-row .form-group { flex:1; }
+    .form-actions { display:flex; gap:10px; margin-top:20px; }
+    .form-actions button { flex:1; padding:12px; border-radius:10px; font-size:0.9rem; font-weight:500; cursor:pointer; font-family:var(--font-body); transition:all 0.2s; }
+    .form-save { background:var(--accent); color:#fff; border:1px solid var(--accent); }
+    .form-save:hover { background:#3b8ae6; }
+    .form-cancel { background:transparent; color:var(--ivory-dark); border:1px solid var(--primary-deeper); }
+    .form-cancel:hover { background:rgba(233,227,211,0.06); }
+
+    /* Drag hint */
+    .drag-hint { font-size:0.7rem; color:var(--ivory-dark); opacity:0.4; text-align:center; margin-top:16px; }
+
+    @media (max-width:768px) {
+      .admin-page { padding:calc(var(--nav-height) + 16px) 16px 40px; }
+      .admin-grid { grid-template-columns:1fr; }
+      .form-row { flex-direction:column; gap:0; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="splash"><span class="splash-logo logo-font">2</span></div>
+
+<header class="header">
+  <div class="container">
+    <a href="index.html" class="logo">
+      <span class="logo-text">آفاق</span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html">الرئيسية</a>
+      <a href="gallery.html">المعرض</a>
+      <a href="admin.html" class="active">لوحة التحكم</a>
+      <a href="network.html">القنوات والبوتات</a>
+    </nav>
+    <div class="menu-toggle"><span></span><span></span><span></span></div>
+  </div>
+</header>
+
+<main class="page-main">
+<div class="admin-page">
+  <h1>لوحة تحكم المعرض</h1>
+  <p class="subtitle">أضف وتعديل وحذف صور المعرض — تحكم كامل بالمعرض والكاروسيل</p>
+
+  <div class="admin-stats" id="stats"></div>
+
+  <div class="admin-actions">
+    <button class="admin-btn admin-btn-primary" onclick="openAddModal()">+ إضافة صورة</button>
+    <button class="admin-btn admin-btn-secondary" onclick="exportData()">تصدير البيانات</button>
+    <button class="admin-btn admin-btn-secondary" onclick="importData()">استيراد البيانات</button>
+    <button class="admin-btn admin-btn-danger" onclick="clearAll()">مسح الكل</button>
+  </div>
+
+  <div class="admin-grid" id="admin-grid"></div>
+  <p class="drag-hint">اضغط على زر التعديل لتعديل البيانات أو زر الحذف لحذف الصورة</p>
+</div>
+</main>
+
+<!-- Add/Edit Modal -->
+<div class="modal-overlay" id="item-modal">
+  <div class="modal-box">
+    <h2 id="modal-title">إضافة صورة جديدة</h2>
+    <input type="hidden" id="edit-id">
+    <div class="form-group">
+      <label>عنوان الصورة *</label>
+      <input type="text" id="item-title" placeholder="مثال: بسم الله الرحمن الرحيم">
+    </div>
+    <div class="form-group">
+      <label>الوصف</label>
+      <textarea id="item-desc" placeholder="وصف مختصر للصورة"></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>النوع</label>
+        <select id="item-type">
+          <option value="individual">فردي</option>
+          <option value="series">سلسلة</option>
+          <option value="carousel">كاروسيل</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>يظهر في الكاروسيل الرئيسي</label>
+        <select id="item-hero">
+          <option value="0">لا</option>
+          <option value="1">نعم</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>رابط الصورة (URL أو ملف محلي)</label>
+      <input type="text" id="item-image" placeholder="assets/gallery/1.jpg">
+    </div>
+    <div class="form-group">
+      <label>أو ارفع صورة من جهازك</label>
+      <input type="file" id="item-file" accept="image/*" multiple style="color:var(--ivory-dark);font-size:0.85rem;">
+    </div>
+    <div class="form-actions">
+      <button class="form-cancel" onclick="closeModal()">إلغاء</button>
+      <button class="form-save" onclick="saveItem()">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-links">
+      <a href="index.html">الرئيسية</a>
+      <a href="gallery.html">المعرض</a>
+      <a href="admin.html">لوحة التحكم</a>
+      <a href="network.html">القنوات والبوتات</a>
+    </div>
+    <div class="footer-copy">جميع الحقوق محفوظة &copy; 2025 - 2026 فريق آفاق</div>
+  </div>
+</footer>
+
+<script src="js/gallery-data.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

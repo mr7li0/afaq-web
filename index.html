@@ -217,18 +217,38 @@
   </div>
 </footer>
 
-<script src="js/gallery-data.js"></script>
 <script>
 (function () {
-  // Hero carousel from gallery data
   var track = document.getElementById('hero-carousel');
-  if (!track || typeof galleryData === 'undefined') return;
-  var items = galleryData.slice(0, 6);
+  if (!track) return;
+
+  // Try loading from admin localStorage first
+  var items = [];
+  try {
+    var saved = localStorage.getItem('afaq_gallery_data');
+    if (saved) {
+      var allData = JSON.parse(saved);
+      // Show hero items first, then fill up to 6 with others
+      var heroItems = allData.filter(function (d) { return d.hero; });
+      var otherItems = allData.filter(function (d) { return !d.hero; });
+      items = heroItems.concat(otherItems).slice(0, 6);
+    }
+  } catch (e) {}
+
+  // Fallback to static galleryData
+  if (items.length === 0 && typeof galleryData !== 'undefined') {
+    items = galleryData.slice(0, 6);
+  }
+
   items.forEach(function (item) {
     var div = document.createElement('div');
     div.className = 'hero-carousel-item';
     var img = document.createElement('img');
-    img.src = './assets/gallery/' + item.images[0];
+    var src = item.images[0];
+    if (src.indexOf('data:') !== 0 && src.indexOf('http') !== 0) {
+      src = './assets/gallery/' + src;
+    }
+    img.src = src;
     img.alt = item.title;
     img.loading = 'lazy';
     img.onerror = function () {
