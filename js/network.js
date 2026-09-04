@@ -59,35 +59,6 @@
     }
   };
 
-  var splash = document.getElementById('splash');
-  if (splash) {
-    if (sessionStorage.getItem('afaq_splash')) {
-      splash.remove();
-    } else {
-      sessionStorage.setItem('afaq_splash', '1');
-      setTimeout(function () {
-        splash.classList.add('hide');
-        document.body.style.overflow = '';
-        setTimeout(function () { if (splash.parentNode) splash.remove(); }, 700);
-      }, 1800);
-    }
-  }
-
-  var menuToggle = document.querySelector('.menu-toggle');
-  var navLinks = document.querySelector('.nav-links');
-  if (menuToggle) {
-    menuToggle.addEventListener('click', function () {
-      menuToggle.classList.toggle('active');
-      navLinks.classList.toggle('open');
-    });
-  }
-  (document.querySelectorAll('.nav-links a') || []).forEach(function (l) {
-    l.addEventListener('click', function () {
-      if (menuToggle) menuToggle.classList.remove('active');
-      if (navLinks) navLinks.classList.remove('open');
-    });
-  });
-
   var container = document.getElementById('network-categories');
   if (!container) return;
 

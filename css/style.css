@@ -74,6 +74,7 @@ body {
   -moz-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
   min-height: 100vh;
+  background: var(--bg-dark);
 }
 body::before {
   content: '';
