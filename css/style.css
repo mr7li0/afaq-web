@@ -158,9 +158,11 @@ h1,h2,h3,h4 { font-family:var(--font-milan); font-weight:normal; line-height:1.2
 }
 .logo-text {
   font-family:var(--font-milan);
-  font-size:1.5rem;
+  font-size:1.8rem;
   color:var(--ivory);
   pointer-events:auto;
+  font-weight:700;
+  letter-spacing:1px;
 }
 .nav-links { display:flex; gap:28px; align-items:center; }
 .nav-links a {
@@ -200,17 +202,23 @@ h1,h2,h3,h4 { font-family:var(--font-milan); font-weight:normal; line-height:1.2
   .header { height:56px; padding-top:env(safe-area-inset-top, 0px); }
   .nav-links {
     position:fixed; top:56px; left:0; right:0;
-    background:rgba(106,124,126,0.95);
+    background:rgba(106,124,126,0.97);
     backdrop-filter:blur(16px);
-    flex-direction:column; padding:24px; gap:18px;
-    transform:translateY(-120%);
-    transition:transform var(--transition);
+    -webkit-backdrop-filter:blur(16px);
+    flex-direction:column; padding:0 24px; gap:0;
+    max-height:0; overflow:hidden;
+    opacity:0;
+    pointer-events:none;
+    transition:max-height 0.3s ease, opacity 0.25s ease, padding 0.3s ease;
     border-bottom:1px solid rgba(233,227,211,0.1);
   }
-  .nav-links.open { transform:translateY(0); }
+  .nav-links.open {
+    max-height:300px; opacity:1;
+    pointer-events:auto;
+    padding:20px 24px; gap:18px;
+  }
   .menu-toggle { display:flex; }
-  .logo { font-size:1.6rem; }
-  .logo-text { font-size:1.3rem; }
+  .logo-text { font-size:1.4rem; font-weight:700; }
   .logo-img { width:50px; height:50px; font-size:36px; }
   .hero-logo { width:200px; height:200px; font-size:140px; }
 }
