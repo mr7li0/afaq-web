@@ -197,10 +197,10 @@ h1,h2,h3,h4 { font-family:var(--font-milan); font-weight:normal; line-height:1.2
 .menu-toggle.active span:nth-child(3) { transform:rotate(-45deg) translate(6px,-6px); }
 
 @media (max-width:768px) {
-  .header { height:60px; }
+  .header { height:56px; padding-top:env(safe-area-inset-top, 0px); }
   .nav-links {
-    position:fixed; top:60px; left:0; right:0;
-    background:rgba(106,124,126,0.92);
+    position:fixed; top:56px; left:0; right:0;
+    background:rgba(106,124,126,0.95);
     backdrop-filter:blur(16px);
     flex-direction:column; padding:24px; gap:18px;
     transform:translateY(-120%);
