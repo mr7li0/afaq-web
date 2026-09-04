@@ -40,25 +40,22 @@
       opacity:0.85;
     }
 
-    /* Gallery Carousel */
+    /* Gallery Carousel - Auto Animated */
     .hero-carousel {
       width:100%; max-width:600px;
       overflow:hidden; border-radius:20px;
       position:relative;
     }
     .hero-carousel-track {
-      display:flex; gap:12px;
-      overflow-x:auto; scroll-snap-type:x mandatory;
-      -webkit-overflow-scrolling:touch;
-      padding:10px 0 20px;
+      display:flex; gap:0;
+      transition:transform 0.5s ease;
+      width:100%;
     }
-    .hero-carousel-track::-webkit-scrollbar { height:0; }
     .hero-carousel-item {
-      flex:0 0 200px; height:280px;
+      flex:0 0 100%; height:320px;
       border-radius:16px; overflow:hidden;
       background:rgba(233,227,211,0.05);
       border:1px solid rgba(233,227,211,0.08);
-      scroll-snap-align:center;
       display:flex; align-items:center; justify-content:center;
       position:relative;
     }
@@ -69,6 +66,16 @@
       color:var(--ivory-dark); opacity:0.3;
       font-size:0.85rem; text-align:center; padding:20px;
     }
+    .carousel-dots {
+      display:flex; justify-content:center; gap:8px;
+      padding:12px 0 0;
+    }
+    .carousel-dot {
+      width:8px; height:8px; border-radius:50%;
+      background:rgba(233,227,211,0.3); border:none; cursor:pointer;
+      transition:all 0.3s;
+    }
+    .carousel-dot.active { background:var(--ivory); transform:scale(1.3); }
 
     /* App Section */
     .app-section {
@@ -177,9 +184,8 @@
       مجموعة آفاق الإسلامية — نسلط الضوء على قضايا المستضعفين المسلمين، وننشر القرآن الكريم والخير والعلم بين الناس. نسعى لأن نكون سبباً في خير ونور لكل مسلم حول العالم.
     </p>
     <div class="hero-carousel">
-      <div class="hero-carousel-track" id="hero-carousel">
-        <!-- Carousel items loaded by JS -->
-      </div>
+      <div class="hero-carousel-track" id="hero-carousel"></div>
+      <div class="carousel-dots" id="hero-dots"></div>
     </div>
   </div>
 </section>
@@ -189,7 +195,7 @@
   <div class="app-card">
     <h2>تطبيق آفاق</h2>
     <p>تطبيق إسلامي شامل يضم مواقيت الصلاة الدقيقة، القرآن الكريم بخطوط مميزة، الأذكار اليومية، ومنبهات متقدمة — كل ما تحتاجه للعبادة في مكان واحد.</p>
-    <a href="https://github.com/mr7li0/afaq-app/releases/download/v1.1.0/app-release.apk" class="btn-download">
+    <a href="https://github.com/mr7li0/afaq-app/releases/download/v1.1.0/app-release.apk" class="btn-download" onclick="trackDownload()">
       <svg viewBox="0 0 24 24" fill="currentColor">
         <path fill-rule="evenodd" d="M12 2.25a.75.75 0 0 1 .75.75v11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd"/>
         <path d="M5.25 15a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h9a1.5 1.5 0 0 0 1.5-1.5V15.75a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3h-9a3 3 0 0 1-3-3V15.75a.75.75 0 0 1 .75-.75Z"/>
@@ -222,34 +228,37 @@
 <script>
 (function () {
   var track = document.getElementById('hero-carousel');
+  var dotsContainer = document.getElementById('hero-dots');
   if (!track) return;
 
-  // Try loading from admin localStorage first
   var items = [];
   try {
     var saved = localStorage.getItem('afaq_gallery_data');
     if (saved) {
       var allData = JSON.parse(saved);
-      // Show hero items first, then fill up to 6 with others
       var heroItems = allData.filter(function (d) { return d.hero; });
       var otherItems = allData.filter(function (d) { return !d.hero; });
-      items = heroItems.concat(otherItems).slice(0, 6);
+      items = heroItems.concat(otherItems).slice(0, 8);
     }
   } catch (e) {}
 
-  // Fallback to static galleryData
   if (items.length === 0 && typeof galleryData !== 'undefined') {
-    items = galleryData.slice(0, 6);
+    items = galleryData.slice(0, 8);
   }
 
-  items.forEach(function (item) {
+  if (items.length === 0) {
+    track.parentElement.style.display = 'none';
+    return;
+  }
+
+  var currentIndex = 0;
+
+  items.forEach(function (item, idx) {
     var div = document.createElement('div');
     div.className = 'hero-carousel-item';
     var img = document.createElement('img');
     var src = item.images[0];
-    if (src.indexOf('data:') !== 0 && src.indexOf('http') !== 0) {
-      src = './assets/gallery/' + src;
-    }
+    if (src.indexOf('data:') !== 0 && src.indexOf('http') !== 0) src = './assets/gallery/' + src;
     img.src = src;
     img.alt = item.title;
     img.loading = 'lazy';
@@ -263,6 +272,31 @@
     div.appendChild(img);
     track.appendChild(div);
   });
+
+  // Dots
+  if (dotsContainer && items.length > 1) {
+    items.forEach(function (_, i) {
+      var dot = document.createElement('button');
+      dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+      dot.onclick = function () { goToSlide(i); };
+      dotsContainer.appendChild(dot);
+    });
+  }
+
+  function goToSlide(idx) {
+    currentIndex = idx;
+    track.style.transform = 'translateX(' + (idx * 100) * (document.documentElement.dir === 'rtl' ? 1 : -1) + '%)';
+    var dots = dotsContainer ? dotsContainer.querySelectorAll('.carousel-dot') : [];
+    dots.forEach(function (d, i) { d.classList.toggle('active', i === idx); });
+  }
+
+  // Auto slide
+  if (items.length > 1) {
+    setInterval(function () {
+      currentIndex = (currentIndex + 1) % items.length;
+      goToSlide(currentIndex);
+    }, 3500);
+  }
 })();
 </script>
 <script src="js/app.js"></script>

@@ -2,101 +2,52 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
   <title>آفاق - المعرض</title>
   <meta name="description" content="معرض تصاميم آفاق">
   <link rel="stylesheet" href="css/style.css">
-  <script src="js/kufam-font.js"></script>
   <style>
-    /* ===== GALLERY PAGE ===== */
-    .gallery-page { padding-top:calc(var(--nav-height) + 20px); padding-bottom:40px; direction:rtl; }
-    .gallery-page .container { max-width:1200px; margin:0 auto; padding:0 20px; }
-    .gallery-page .section-title { font-size:28px; font-weight:600; color:var(--ivory); margin:0 0 4px; }
-    .gallery-page .section-subtitle { color:var(--ivory-dark); font-size:14px; margin:0 0 32px; opacity:0.7; }
-
-    /* Filter tabs */
-    .gallery-filters { display:flex; gap:6px; margin-bottom:28px; flex-wrap:wrap; }
-    .gallery-filter {
-      padding:6px 16px; border-radius:20px; border:1px solid var(--primary-deeper);
-      background:transparent; color:var(--ivory-dark); cursor:pointer;
-      font-size:13px; font-family:var(--font-body); transition:all 0.2s;
-    }
-    .gallery-filter:hover { border-color:var(--accent); color:var(--ivory); }
-    .gallery-filter.active { background:var(--accent-dim); border-color:var(--accent); color:var(--ivory); }
-
-    /* Grid layout */
-    .gallery-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; }
-    .gallery-item {
-      border-radius:14px; overflow:hidden;
-      background:var(--bg-card); border:1px solid var(--primary-deeper);
-      transition:all 0.25s; cursor:pointer; position:relative;
-    }
-    .gallery-item:hover { transform:translateY(-3px); border-color:var(--accent); box-shadow:0 8px 24px var(--shadow-heavy); }
-    .gallery-item-img {
-      width:100%; aspect-ratio:1; object-fit:cover;
-      background:var(--bg-dark); display:block;
-    }
-    .gallery-item-info { padding:12px 14px 14px; }
-    .gallery-item-title { font-size:14px; font-weight:500; color:var(--ivory); margin:0 0 2px; }
-    .gallery-item-desc { font-size:12px; color:var(--ivory-dark); opacity:0.6; margin:0; }
-
-    /* Series badge */
-    .gallery-item-badge {
-      position:absolute; top:10px; left:10px;
-      padding:4px 10px; border-radius:6px;
-      background:var(--accent-dim); color:var(--accent);
-      font-size:11px; font-weight:500; border:1px solid var(--accent);
-    }
-
-    /* Album / Series page */
-    .series-header { margin-bottom:28px; }
-    .series-header h2 { font-size:24px; color:var(--ivory); margin:0 0 6px; }
-    .series-header p { font-size:14px; color:var(--ivory-dark); opacity:0.7; margin:0; }
-    .series-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; }
-
+    .gallery-page { padding:calc(56px + env(safe-area-inset-top, 0px) + 20px) 20px 40px; max-width:1200px; margin:0 auto; }
+    .gallery-page h1 { font-size:28px; font-weight:600; color:var(--ivory); margin:0 0 4px; }
+    .gallery-page .sub { color:var(--ivory-dark); font-size:14px; margin:0 0 28px; opacity:0.7; }
+    .gallery-filters { display:flex; gap:6px; margin-bottom:24px; flex-wrap:wrap; }
+    .gallery-filter { padding:6px 16px; border-radius:20px; border:1px solid var(--primary-deeper); background:transparent; color:var(--ivory-dark); font-size:0.82rem; cursor:pointer; transition:all 0.2s; font-family:var(--font-body); }
+    .gallery-filter:hover { border-color:var(--ivory-dark); }
+    .gallery-filter.active { background:var(--ivory); color:var(--primary-deeper); border-color:var(--ivory); font-weight:600; }
+    .gallery-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:16px; }
+    .gallery-item { background:var(--bg-card, #20272a); border:1px solid var(--primary-deeper); border-radius:14px; overflow:hidden; cursor:pointer; transition:all 0.25s; }
+    .gallery-item:hover { border-color:var(--accent); transform:translateY(-3px); box-shadow:0 8px 24px rgba(0,0,0,0.3); }
+    .gallery-item-img { width:100%; aspect-ratio:1; object-fit:cover; display:block; }
+    .gallery-item-badge { position:absolute; top:10px; left:10px; padding:3px 10px; border-radius:6px; font-size:0.7rem; font-weight:600; background:rgba(79,156,247,0.9); color:#fff; }
+    .gallery-item-badge.series-badge { background:rgba(255,171,118,0.9); }
+    .gallery-item-badge.multi-badge { background:rgba(126,200,160,0.9); }
+    .gallery-item-info { padding:12px 14px; }
+    .gallery-item-title { font-size:0.9rem; font-weight:500; color:var(--ivory); margin:0 0 4px; }
+    .gallery-item-desc { font-size:0.75rem; color:var(--ivory-dark); opacity:0.6; margin:0; }
+    .gallery-placeholder { width:100%; aspect-ratio:1; display:flex; align-items:center; justify-content:center; background:var(--bg-dark, #1a2024); color:var(--ivory-dark); opacity:0.3; }
+    .empty-gallery { grid-column:1/-1; text-align:center; padding:60px 0; color:var(--ivory-dark); opacity:0.5; font-size:0.9rem; }
     /* Lightbox */
-    .lightbox {
-      position:fixed; inset:0; z-index:20000;
-      background:rgba(0,0,0,0.85); display:none;
-      align-items:center; justify-content:center;
-    }
+    .lightbox { position:fixed; inset:0; z-index:20000; background:rgba(0,0,0,0.92); display:none; align-items:center; justify-content:center; }
     .lightbox.open { display:flex; }
-    .lightbox-img { max-width:90vw; max-height:85vh; border-radius:12px; box-shadow:0 16px 64px rgba(0,0,0,0.6); }
-    .lightbox-close {
-      position:fixed; top:20px; left:20px; z-index:20001;
-      width:40px; height:40px; border-radius:50%; border:none;
-      background:rgba(255,255,255,0.1); color:var(--ivory);
-      font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center;
-    }
-    .lightbox-close:hover { background:rgba(255,255,255,0.2); }
-    .lightbox-nav {
-      position:fixed; top:50%; transform:translateY(-50%);
-      width:44px; height:44px; border-radius:50%; border:none;
-      background:rgba(255,255,255,0.08); color:var(--ivory);
-      font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center;
-    }
-    .lightbox-nav:hover { background:rgba(255,255,255,0.15); }
-    .lightbox-prev { right:20px; }
-    .lightbox-next { left:20px; }
-
-    /* Placeholder for missing images */
-    .gallery-placeholder {
-      width:100%; aspect-ratio:1; display:flex; align-items:center; justify-content:center;
-      background:var(--bg-dark); color:var(--ivory-dark); opacity:0.3;
-    }
-    .gallery-placeholder svg { width:48px; height:48px; }
-
-    /* Carousel inside item */
-    .gallery-carousel { position:relative; }
-    .carousel-track { display:flex; overflow-x:auto; gap:4px; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; }
-    .carousel-track::-webkit-scrollbar { display:none; }
-    .carousel-item { flex:0 0 100%; scroll-snap-align:start; aspect-ratio:1; object-fit:cover; }
-    .carousel-dots { display:flex; gap:4px; justify-content:center; padding:8px 0 0; }
-    .carousel-dot { width:6px; height:6px; border-radius:50%; background:var(--ivory-dark); opacity:0.3; border:none; cursor:pointer; }
-    .carousel-dot.active { opacity:1; background:var(--accent); width:16px; border-radius:3px; }
-
-    @media (max-width:600px) {
-      .gallery-grid { grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; }
+    .lightbox-close { position:absolute; top:16px; left:16px; background:none; border:none; color:#fff; font-size:32px; cursor:pointer; z-index:2; }
+    .lightbox-img { max-width:90%; max-height:85vh; object-fit:contain; border-radius:8px; }
+    .lightbox-nav { position:absolute; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.15); border:none; color:#fff; font-size:36px; width:50px; height:50px; border-radius:50%; cursor:pointer; }
+    .lightbox-prev { right:16px; }
+    .lightbox-next { left:16px; }
+    .lightbox-counter { position:absolute; bottom:20px; left:50%; transform:translateX(-50%); color:rgba(255,255,255,0.7); font-size:0.85rem; }
+    /* Series view */
+    .series-modal { position:fixed; inset:0; z-index:20000; background:rgba(0,0,0,0.92); display:none; flex-direction:column; align-items:center; overflow-y:auto; padding:60px 16px; }
+    .series-modal.open { display:flex; }
+    .series-close { position:fixed; top:16px; left:16px; background:none; border:none; color:#fff; font-size:32px; cursor:pointer; z-index:2; }
+    .series-title { color:var(--ivory); font-size:1.3rem; font-weight:600; margin-bottom:20px; text-align:center; }
+    .series-group { margin-bottom:32px; width:100%; max-width:600px; }
+    .series-group-label { color:var(--ivory-dark); font-size:0.8rem; margin-bottom:10px; opacity:0.6; }
+    .series-group-track { display:flex; gap:10px; overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; padding-bottom:8px; }
+    .series-group-track::-webkit-scrollbar { height:0; }
+    .series-group-track img { flex:0 0 85%; max-width:85%; scroll-snap-align:center; border-radius:12px; object-fit:cover; aspect-ratio:1; }
+    @media (max-width:768px) {
+      .gallery-grid { grid-template-columns:1fr; }
+      .series-group-track img { flex:0 0 90%; max-width:90%; }
     }
   </style>
 </head>
@@ -119,30 +70,32 @@
 </header>
 
 <main class="page-main">
-  <div class="gallery-page">
-    <div class="container">
-      <h1 class="section-title">المعرض</h1>
-      <p class="section-subtitle">تصاميمنا وإبداعاتنا — كل تصميم يحكي قصة</p>
-
-      <div class="gallery-filters" id="gallery-filters">
-        <button class="gallery-filter active" data-filter="all">الكل</button>
-        <button class="gallery-filter" data-filter="individual">فردي</button>
-        <button class="gallery-filter" data-filter="series">سلسلة</button>
-        <button class="gallery-filter" data-filter="carousel">كاروسيل</button>
-      </div>
-
-      <div class="gallery-grid" id="gallery-grid">
-        <!-- Items loaded by JS -->
-      </div>
-    </div>
+<div class="gallery-page">
+  <h1>المعرض</h1>
+  <p class="sub">تصاميمنا وإبداعاتنا — كل تصميم يحكي قصة</p>
+  <div class="gallery-filters" id="gallery-filters">
+    <button class="gallery-filter active" data-filter="all">الكل</button>
+    <button class="gallery-filter" data-filter="individual">فردي</button>
+    <button class="gallery-filter" data-filter="series">سلسلة</button>
   </div>
+  <div class="gallery-grid" id="gallery-grid"></div>
+</div>
 </main>
 
-<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
-  <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
-  <button class="lightbox-nav lightbox-prev" id="lb-prev">&lsaquo;</button>
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lb-close">&times;</button>
+  <button class="lightbox-nav lightbox-prev" id="lb-prev">&rsaquo;</button>
   <img class="lightbox-img" id="lightbox-img" src="" alt="">
-  <button class="lightbox-nav lightbox-next" id="lb-next">&rsaquo;</button>
+  <button class="lightbox-nav lightbox-next" id="lb-next">&lsaquo;</button>
+  <div class="lightbox-counter" id="lb-counter"></div>
+</div>
+
+<!-- Series View -->
+<div class="series-modal" id="series-modal">
+  <button class="series-close" id="series-close">&times;</button>
+  <div class="series-title" id="series-title"></div>
+  <div id="series-content"></div>
 </div>
 
 <footer class="footer">
@@ -161,147 +114,188 @@
 (function () {
   'use strict';
 
-  var currentFilter = 'all';
-  var lightboxItems = [];
-  var lightboxIndex = 0;
+  var STORAGE_KEY = 'afaq_gallery_data';
 
-  // ===== Render Gallery =====
+  function getGalleryData() {
+    try {
+      var saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        var data = JSON.parse(saved);
+        if (Array.isArray(data) && data.length > 0) return data;
+      }
+    } catch (e) {}
+    return typeof galleryData !== 'undefined' ? galleryData : [];
+  }
+
+  function getImgSrc(src) {
+    if (!src) return '';
+    if (src.indexOf('data:') === 0 || src.indexOf('http') === 0) return src;
+    return './assets/gallery/' + src;
+  }
+
   function renderGallery(filter) {
     var grid = document.getElementById('gallery-grid');
     if (!grid) return;
     grid.innerHTML = '';
-    var items = filter === 'all' ? galleryData : galleryData.filter(function (d) { return d.type === filter; });
+    var data = getGalleryData();
+    var items = filter === 'all' ? data : data.filter(function (d) { return d.type === filter; });
+
+    if (items.length === 0) {
+      grid.innerHTML = '<p class="empty-gallery">لا توجد صور في المعرض بعد</p>';
+      return;
+    }
+
     items.forEach(function (item) {
       var col = document.createElement('div');
       col.className = 'gallery-item';
-      col.dataset.id = item.id;
-      col.dataset.type = item.type;
 
-      var badgeMap = { individual: 'فردي', series: 'سلسلة', carousel: 'كاروسيل' };
-      var badge = document.createElement('div');
-      badge.className = 'gallery-item-badge';
-      badge.textContent = badgeMap[item.type] || '';
+      var imgSrc = getImgSrc(item.images && item.images[0] ? item.images[0] : '');
+      var imgCount = item.images ? item.images.length : 0;
 
       var imgWrap = document.createElement('div');
       imgWrap.style.position = 'relative';
 
-      if (item.type === 'carousel' && item.images.length > 1) {
-        // Carousel inside the card
-        var track = document.createElement('div');
-        track.className = 'carousel-track';
-        item.images.forEach(function (src, si) {
-          var img = document.createElement('img');
-          img.className = 'carousel-item';
-          img.src = './assets/gallery/' + src;
-          img.alt = item.title + ' ' + (si + 1);
-          img.loading = 'lazy';
-          img.onerror = placeholderSVG;
-          track.appendChild(img);
-        });
-        imgWrap.appendChild(track);
-        // Dots
-        if (item.images.length > 1) {
-          var dots = document.createElement('div');
-          dots.className = 'carousel-dots';
-          item.images.forEach(function (_, di) {
-            var dot = document.createElement('button');
-            dot.className = 'carousel-dot' + (di === 0 ? ' active' : '');
-            dot.onclick = function (e) { e.stopPropagation(); scrollTo(track, di); };
-            dots.appendChild(dot);
-          });
-          imgWrap.appendChild(dots);
-          // Update dots on scroll
-          track.addEventListener('scroll', function () {
-            var idx = Math.round(track.scrollLeft / track.offsetWidth);
-            dots.querySelectorAll('.carousel-dot').forEach(function (d, i) {
-              d.classList.toggle('active', i === idx);
-            });
-          });
-        }
-      } else {
-        var img = document.createElement('img');
-        img.className = 'gallery-item-img';
-        img.src = './assets/gallery/' + item.images[0];
-        img.alt = item.title;
-        img.loading = 'lazy';
-        img.onerror = placeholderSVG;
-        imgWrap.appendChild(img);
-      }
+      var img = document.createElement('img');
+      img.className = 'gallery-item-img';
+      img.src = imgSrc;
+      img.alt = item.title;
+      img.loading = 'lazy';
+      img.onerror = function () {
+        this.style.display = 'none';
+        var ph = document.createElement('div');
+        ph.className = 'gallery-placeholder';
+        ph.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" width="48" height="48"><path fill-rule="evenodd" d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6z"/></svg>';
+        imgWrap.appendChild(ph);
+      };
+      imgWrap.appendChild(img);
 
+      // Badge
+      var badge = document.createElement('div');
+      if (item.type === 'series') {
+        badge.className = 'gallery-item-badge series-badge';
+        badge.textContent = 'سلسلة';
+      } else if (imgCount > 1) {
+        badge.className = 'gallery-item-badge multi-badge';
+        badge.textContent = imgCount + ' صور';
+      } else {
+        badge.className = 'gallery-item-badge';
+        badge.textContent = 'فردي';
+      }
       imgWrap.appendChild(badge);
 
       var info = document.createElement('div');
       info.className = 'gallery-item-info';
-      info.innerHTML = '<div class="gallery-item-title">' + item.title + '</div><div class="gallery-item-desc">' + item.desc + '</div>';
+      info.innerHTML = '<div class="gallery-item-title">' + esc(item.title) + '</div><div class="gallery-item-desc">' + esc(item.desc || '') + '</div>';
 
       col.appendChild(imgWrap);
       col.appendChild(info);
 
       col.addEventListener('click', function () {
-        openLightbox(item);
+        if (item.type === 'series') {
+          openSeries(item);
+        } else {
+          openLightbox(item);
+        }
       });
 
       grid.appendChild(col);
     });
   }
 
-  function placeholderSVG() {
-    this.style.display = 'none';
-    var p = this.parentNode;
-    var ph = document.createElement('div');
-    ph.className = 'gallery-placeholder';
-    ph.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" width="48" height="48"><path fill-rule="evenodd" d="M1.5 6a2.25 2.25 0 0 1 2.25-2.25h16.5A2.25 2.25 0 0 1 22.5 6v12a2.25 2.25 0 0 1-2.25 2.25H3.75A2.25 2.25 0 0 1 1.5 18V6ZM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0 0 21 18v-1.94l-2.69-2.689a1.5 1.5 0 0 0-2.12 0l-.88.879.97.97a.75.75 0 1 1-1.06 1.06l-5.16-5.159a1.5 1.5 0 0 0-2.12 0L3 16.061Zm10.125-7.81a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Z" clip-rule="evenodd"/></svg>';
-    if (p) p.appendChild(ph);
-  }
-
-  function scrollTo(el, idx) {
-    el.scrollTo({ left: el.offsetWidth * idx, behavior: 'smooth' });
-  }
+  function esc(s) { var d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
 
   // ===== Lightbox =====
+  var lbItems = [], lbIdx = 0;
+
   function openLightbox(item) {
-    lightboxItems = item.images;
-    lightboxIndex = 0;
-    showLightboxImage();
+    lbItems = (item.images || []).map(getImgSrc);
+    lbIdx = 0;
+    showLbImg();
     document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
   }
 
-  function showLightboxImage() {
-    var img = document.getElementById('lightbox-img');
-    img.src = './assets/gallery/' + lightboxItems[lightboxIndex];
-    document.getElementById('lb-prev').style.display = lightboxItems.length > 1 ? '' : 'none';
-    document.getElementById('lb-next').style.display = lightboxItems.length > 1 ? '' : 'none';
+  function showLbImg() {
+    document.getElementById('lightbox-img').src = lbItems[lbIdx];
+    document.getElementById('lb-prev').style.display = lbIdx > 0 ? '' : 'none';
+    document.getElementById('lb-next').style.display = lbIdx < lbItems.length - 1 ? '' : 'none';
+    document.getElementById('lb-counter').textContent = (lbIdx + 1) + ' / ' + lbItems.length;
   }
 
-  window.openLightbox = openLightbox;
-  window.closeLightbox = function (e) {
-    if (!e || e.target === e.currentTarget || e.target.classList.contains('lightbox-close')) {
-      document.getElementById('lightbox').classList.remove('open');
+  function closeLb() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('lb-close').addEventListener('click', closeLb);
+  document.getElementById('lightbox').addEventListener('click', function (e) { if (e.target === this) closeLb(); });
+  document.getElementById('lb-prev').addEventListener('click', function (e) { e.stopPropagation(); if (lbIdx > 0) { lbIdx--; showLbImg(); } });
+  document.getElementById('lb-next').addEventListener('click', function (e) { e.stopPropagation(); if (lbIdx < lbItems.length - 1) { lbIdx++; showLbImg(); } });
+
+  // ===== Series View =====
+  function openSeries(item) {
+    var modal = document.getElementById('series-modal');
+    document.getElementById('series-title').textContent = item.title;
+    var content = document.getElementById('series-content');
+    content.innerHTML = '';
+
+    var groups = item.seriesGroups || [];
+    if (groups.length === 0 && item.images && item.images.length > 0) {
+      groups = [{ images: item.images }];
     }
-  };
 
-  document.getElementById('lb-prev').addEventListener('click', function (e) { e.stopPropagation(); if (lightboxIndex > 0) { lightboxIndex--; showLightboxImage(); } });
-  document.getElementById('lb-next').addEventListener('click', function (e) { e.stopPropagation(); if (lightboxIndex < lightboxItems.length - 1) { lightboxIndex++; showLightboxImage(); } });
+    groups.forEach(function (group, gi) {
+      var groupEl = document.createElement('div');
+      groupEl.className = 'series-group';
 
+      var label = document.createElement('div');
+      label.className = 'series-group-label';
+      label.textContent = 'المجموعة ' + (gi + 1) + (group.label ? ' — ' + group.label : '');
+      groupEl.appendChild(label);
+
+      var track = document.createElement('div');
+      track.className = 'series-group-track';
+      (group.images || []).forEach(function (src) {
+        var img = document.createElement('img');
+        img.src = getImgSrc(src);
+        img.alt = item.title;
+        img.loading = 'lazy';
+        track.appendChild(img);
+      });
+      groupEl.appendChild(track);
+      content.appendChild(groupEl);
+    });
+
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  document.getElementById('series-close').addEventListener('click', function () {
+    document.getElementById('series-modal').classList.remove('open');
+    document.body.style.overflow = '';
+  });
+  document.getElementById('series-modal').addEventListener('click', function (e) {
+    if (e.target === this) { this.classList.remove('open'); document.body.style.overflow = ''; }
+  });
+
+  // ===== Keyboard =====
   document.addEventListener('keydown', function (e) {
-    if (!document.getElementById('lightbox').classList.contains('open')) return;
-    if (e.key === 'Escape') closeLightbox();
-    if (e.key === 'ArrowRight' && lightboxIndex > 0) { lightboxIndex--; showLightboxImage(); }
-    if (e.key === 'ArrowLeft' && lightboxIndex < lightboxItems.length - 1) { lightboxIndex++; showLightboxImage(); }
+    if (e.key === 'Escape') { closeLb(); document.getElementById('series-modal').classList.remove('open'); document.body.style.overflow = ''; }
+    if (document.getElementById('lightbox').classList.contains('open')) {
+      if (e.key === 'ArrowRight' && lbIdx > 0) { lbIdx--; showLbImg(); }
+      if (e.key === 'ArrowLeft' && lbIdx < lbItems.length - 1) { lbIdx++; showLbImg(); }
+    }
   });
 
   // ===== Filters =====
-  var filterBtns = document.querySelectorAll('.gallery-filter');
-  filterBtns.forEach(function (btn) {
+  document.querySelectorAll('.gallery-filter').forEach(function (btn) {
     btn.addEventListener('click', function () {
-      filterBtns.forEach(function (b) { b.classList.remove('active'); });
+      document.querySelectorAll('.gallery-filter').forEach(function (b) { b.classList.remove('active'); });
       this.classList.add('active');
-      currentFilter = this.dataset.filter;
-      renderGallery(currentFilter);
+      renderGallery(this.dataset.filter);
     });
   });
 
-  // ===== Init =====
   renderGallery('all');
 })();
 </script>

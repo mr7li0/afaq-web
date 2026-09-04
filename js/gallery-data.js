@@ -1,2 +1,2 @@
-// Gallery Data - shared between index.html and gallery.html
+// Gallery Data - fallback only, admin uses localStorage
 var galleryData = [];
