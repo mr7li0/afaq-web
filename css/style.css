@@ -157,7 +157,10 @@ h1,h2,h3,h4 { font-family:var(--font-milan); font-weight:normal; line-height:1.2
   flex-shrink:0;
 }
 .logo-text {
-  display:none;
+  font-family:var(--font-milan);
+  font-size:1.5rem;
+  color:var(--ivory);
+  pointer-events:auto;
 }
 .nav-links { display:flex; gap:28px; align-items:center; }
 .nav-links a {
@@ -194,8 +197,9 @@ h1,h2,h3,h4 { font-family:var(--font-milan); font-weight:normal; line-height:1.2
 .menu-toggle.active span:nth-child(3) { transform:rotate(-45deg) translate(6px,-6px); }
 
 @media (max-width:768px) {
+  .header { height:60px; }
   .nav-links {
-    position:fixed; top:var(--nav-height); left:0; right:0;
+    position:fixed; top:60px; left:0; right:0;
     background:rgba(106,124,126,0.92);
     backdrop-filter:blur(16px);
     flex-direction:column; padding:24px; gap:18px;
@@ -206,7 +210,8 @@ h1,h2,h3,h4 { font-family:var(--font-milan); font-weight:normal; line-height:1.2
   .nav-links.open { transform:translateY(0); }
   .menu-toggle { display:flex; }
   .logo { font-size:1.6rem; }
-  .logo-img { width:75px; height:75px; font-size:54px; }
+  .logo-text { font-size:1.3rem; }
+  .logo-img { width:50px; height:50px; font-size:36px; }
   .hero-logo { width:200px; height:200px; font-size:140px; }
 }
 
